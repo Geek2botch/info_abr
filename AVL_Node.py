@@ -1,5 +1,5 @@
 NB_ROT = 0
-
+REPLACE_VALUE = "r"
 
 def reset_nb_rot():
     global NB_ROT
@@ -94,4 +94,51 @@ class AVL_Node:
         node = self.insert_(value)
         return self if node is None else node
 
+    def get_min(self):
+        if self._left is None:
+            return self._value
+        return self._left.get_min()
 
+    def delete_the_node(self):
+        nn = self
+
+        if self._left is None and self._right is None:
+            nn = None
+        elif self._left is None and self._right is not None:
+            nn = self._right
+        elif self._left is not None and self._right is None:
+            nn = self._left
+        else:
+            self._value = self._right.get_min()
+            self._right = self._right.delete(self._value)
+        return nn
+
+    def delete(self, value: int):
+
+        if self._value == value:
+            return self.delete_the_node()
+
+        if value < self._value and self._left is not None:
+            old_balance = self._left._balance
+            self._left = self._left.delete(value)
+            if self._left is None:
+                return self.new_balance(-1)
+            else:
+                if old_balance != 0 and old_balance != self._left._balance:
+                    return self.new_balance(-1)
+                else:
+                    return self
+
+        elif value > self._value and self._right is not None:
+            old_balance = self._right._balance
+            self._right = self._right.delete(value)
+            if self._right is None:
+                return self.new_balance(1)
+            else:
+                if old_balance != 0 and old_balance != self._right._balance:
+                    return self.new_balance(1)
+                else:
+                    return self
+
+        else:
+            return self
