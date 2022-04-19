@@ -286,7 +286,7 @@ class TestBST(unittest.TestCase):
             print("Votre code a effectué :", ficAvlNode.NB_ROT, "rotations")
             print("L'auteur de la test suite a fait", rot, "rotations\n\n")
 
-    def test_hard_1(self):
+    def test_insert_hard_1(self):
         ficAvlNode.reset_nb_rot()
         rot = 6
 
@@ -354,6 +354,34 @@ class TestBST(unittest.TestCase):
         self.assertEqual(None, bst._left._left._left)
         self.assertEqual(None, bst._right._right._right)
 
+    def test_remove_head_without_upt_bl(self):
+        bst: AVL_Node = AVL_Node(42)
+        bst = bst.insert(69)
+        bst = bst.insert(20)
+        bst = bst.insert(53)
+        bst = bst.insert(80)
+        bst = bst.insert(30)
+        bst = bst.insert(10)
+
+        bst = bst.delete(42)
+
+        if ficAvlNode.REPLACE_VALUE == "l":
+            self.assertEqual(30,   bst._value)
+            self.assertEqual(69,   bst._right._value)
+            self.assertEqual(53,   bst._right._left._value)
+            self.assertEqual(80,   bst._right._right._value)
+            self.assertEqual(20,   bst._left._value)
+            self.assertEqual(None, bst._left._right)
+            self.assertEqual(10,   bst._left._left._value)
+        else:
+            self.assertEqual(53,   bst._value)
+            self.assertEqual(69,   bst._right._value)
+            self.assertEqual(None, bst._right._left)
+            self.assertEqual(80,   bst._right._right._value)
+            self.assertEqual(20,   bst._left._value)
+            self.assertEqual(30,   bst._left._right._value)
+            self.assertEqual(10,   bst._left._left._value)
+
     def test_remove_no_one_sub_without_upt_bl(self):
         bst: AVL_Node = AVL_Node(42)
         bst = bst.insert(69)
@@ -381,7 +409,74 @@ class TestBST(unittest.TestCase):
         self.assertEqual(None, bst._right._right._left)
         self.assertEqual(None, bst._right._right._right)
 
+    def test_remove_leaf(self):
+        bst: AVL_Node = AVL_Node(42)
+        bst = bst.insert(69)
+        bst = bst.insert(20)
+        bst = bst.insert(53)
+        bst = bst.insert(80)
+        bst = bst.insert(30)
+        bst = bst.insert(10)
+        bst = bst.insert(1)
+        bst = bst.insert(800)
+
+        bst = bst.delete(1)
+        bst = bst.delete(1)
+        bst = bst.delete(800)
+
+        self.assertEqual(42,   bst._value)
+        self.assertEqual(69,   bst._right._value)
+        self.assertEqual(20,   bst._left._value)
+        self.assertEqual(53,   bst._right._left._value)
+        self.assertEqual(80,   bst._right._right._value)
+        self.assertEqual(30,   bst._left._right._value)
+        self.assertEqual(10,   bst._left._left._value)
+        self.assertEqual(None, bst._left._left._left)
+        self.assertEqual(None, bst._right._right._right)
+
+        self.assertEqual(0, bst._balance)
+        self.assertEqual(0, bst._left._balance)
+        self.assertEqual(0, bst._left._left._balance)
+        self.assertEqual(0, bst._left._right._balance)
+        self.assertEqual(0, bst._right._balance)
+        self.assertEqual(0, bst._right._left._balance)
+        self.assertEqual(0, bst._right._right._balance)
+
+    def test_remove_no_one_sub(self):
+        bst: AVL_Node = AVL_Node(42)
+        bst = bst.insert(69)
+        bst = bst.insert(20)
+        bst = bst.insert(53)
+        bst = bst.insert(80)
+        bst = bst.insert(30)
+        bst = bst.insert(10)
+        bst = bst.insert(1)
+        bst = bst.insert(800)
+
+        bst = bst.delete(10)
+        bst = bst.delete(10)
+        bst = bst.delete(80)
+
+        self.assertEqual(42,   bst._value)
+        self.assertEqual(69,   bst._right._value)
+        self.assertEqual(20,   bst._left._value)
+        self.assertEqual(53,   bst._right._left._value)
+        self.assertEqual(800,   bst._right._right._value)
+        self.assertEqual(30,   bst._left._right._value)
+        self.assertEqual(1,   bst._left._left._value)
+        self.assertEqual(None, bst._left._left._left)
+        self.assertEqual(None, bst._left._left._right)
+        self.assertEqual(None, bst._right._right._left)
+        self.assertEqual(None, bst._right._right._right)
+
+        self.assertEqual(0, bst._balance)
+        self.assertEqual(0, bst._left._balance)
+        self.assertEqual(0, bst._left._left._balance)
+        self.assertEqual(0, bst._left._right._balance)
+        self.assertEqual(0, bst._right._balance)
+        self.assertEqual(0, bst._right._left._balance)
+        self.assertEqual(0, bst._right._right._balance)
+
 
 if __name__ == '__main__':
     unittest.main()
-

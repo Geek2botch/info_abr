@@ -20,6 +20,8 @@ class AVL_Node:
         temp = head._left
         head._left = self
         self._right = temp
+        head._left._balance = 0
+        head._balance = 0
         return head
 
     def rot_right(self):
@@ -29,8 +31,20 @@ class AVL_Node:
         temp = head._right
         head._right = self
         self._left = temp
+        head._right._balance = 0
+        head._balance = 0
         return head
-    
+
+    def node_balance(self):
+        if self._balance > 1:
+            if self._left._balance <= -1:
+                self._left = self._left.rot_left()
+            return self.rot_right()
+        else:
+            if self._right._balance >= 1:
+                self._right = self._right.rot_right()
+            return self.rot_left()
+
 
     def new_balance(self, delta):
         self._balance += delta
@@ -49,28 +63,32 @@ class AVL_Node:
                 return self.new_balance(1)
             else:
                 old_bal = self._left._balance
-                node = self._left.insert(value)
+                node = self._left.insert_(value)
                 if node is None:
                     return None
                 else:
                     self._left = node
                     if old_bal == 0 and old_bal != node._balance:
                         node = self.new_balance(1)
+                    else:
+                        node = self
                 return node
         else:
             if self._right is None:
                 self._right = AVL_Node(value)
-                return self.new_balance(1)
+                return self.new_balance(-1)
             else:
                 old_bal = self._right._balance
-                node = self._right.insert(value)
+                node = self._right.insert_(value)
                 if node is None:
                     return None
                 else:
                     self._right = node
                     if old_bal == 0 and old_bal != node._balance:
-                        node = self.new_balance(1)
-                return node
+                        node = self.new_balance(-1)
+                    else:
+                        node = self
+                    return node
 
     def insert(self, value):
         node = self.insert_(value)
