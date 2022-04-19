@@ -28,66 +28,24 @@ class AVL_Node:
         return self._left, 0
 
     def insert_(self, value):
-        if self._left is None and self._value > value:
-            self._left = AVL_Node(value)
-            self._balance += 1
-            return self, 1
+        if self._value == value:
+            return None
 
-        elif self._right is None and value > self._value:
-            self._right = AVL_Node(value)
-            self._balance -= 1
-            return self, -1
-
-        elif self._right is None and self._right is None:
-            if self._value > value:
+        if value < self._value:
+            if self._left is None:
                 self._left = AVL_Node(value)
-                return self, 1
+                return self
             else:
-                self._right = AVL_Node(value)
-                return self, -1
-
-
-        elif self._value == value:
-            return self, 0
-
-        if self._value > value:
-            self._left, balance = self._left.insert_(value)
-            self._balance += balance
-
+                return None if self._left.insert(value) is None else self
         else:
-            self._right, balance = self._right.insert_(value)
-            self._balance += balance
-
-        if self._balance <= -2:
-            return self.rot_left()
-
-        elif self._balance >= 2:
-            return self.rot_right()
-
-        return self, balance
+            if self._right is None:
+                self._right = AVL_Node(value)
+                return self
+            else:
+                return None if self._right.insert_(value) is None else self
 
     def insert(self, value):
-        return self.insert_(value)[0]
+        noeud = self.insert_(value)
+        return self if noeud is None else noeud
 
-    def tree_print(self):
-        if self._left is not None:
-            self._left.tree_print()
-        print(self._value, self._balance)
-
-        if self._right is not None:
-            self._right.tree_print()
-
-bst = AVL_Node(42)
-bst = bst.insert(69)
-bst = bst.insert(20)
-bst = bst.insert(53)
-bst = bst.insert(80)
-bst = bst.insert(30)
-bst = bst.insert(10)
-bst = bst.insert(1)
-bst = bst.insert(800)
-
-bst = bst.rot_left()
-
-bst.tree_print()
 
